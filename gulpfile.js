@@ -1,19 +1,61 @@
-const { src, dest, watch, parallel, series } = require('gulp');
+const { src, dest, watch, parallel, series } = require('gulp')
 
-const scss = require('gulp-sass')(require('sass'));
-const concat = require('gulp-concat');
-const browserSync = require('browser-sync').create();
-const uglify = require('gulp-uglify-es').default;
-const autoprefixer = require('gulp-autoprefixer');
-const imagemin = require('gulp-imagemin');
-const del = require('del');
+const scss = require('gulp-sass')(require('sass'))
+const concat = require('gulp-concat')
+const browserSync = require('browser-sync').create()
+const uglify = require('gulp-uglify-es').default
+const autoprefixer = require('gulp-autoprefixer')
+const imagemin = require('gulp-imagemin')
+const del = require('del')
+
+const { JSDOM } = require('jsdom')
+
+// API погоды
+class OpenWeatherClient {
+    api_key = '3f32c6174a894c81c2ce9542fa42441d'
+    base_url = 'https://api.openweathermap.org/data/3.0/onecall'
+    makeApiCallUrl({ lat, lon, exclude, lang }) {
+        return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}&exclude=${exclude}&appid=${this.api_key}`
+    }
+    async fetchCurrent(...opts) {
+        return await fetch({
+            url: this.makeApiCallUrl({
+                
+            })
+        })
+    }
+}
+// отвечает за список городов и регионов рф
+class LocDB {
+	JSDOM = JSDOM
+	base_url = 'https://locdb.ru'
+	async fetchAllCities() {
+		const res = await fetch({
+			url: this.base_url
+		})
+		const html = await res.text()
+		const { window } = new JSDOM(html)
+		const columns = window.document.querySelectorAll('#localApp > div > div > div:nth-child(3) > div > div > div')
+		/** @type {HTMLCollection} */
+		let regionEntries = new HTMLCollection();
+		columns.forEach(c => {
+			regionEntries.push(
+				// ох уж эти дети
+				((c.children)[0].children)[0].children
+			)
+		})
+		const regionNameRegex = /[0-9].*\\n\s*/gm
+		const regions = [...regionEntries].map(entry => entry.textContent.trim().replace(regionNameRegex, ''))
+		const cities = []
+	}
+}
 
 function browsersync() {
 	browserSync.init({
 		server: {
 			baseDir: 'app/'
 		}
-	});
+	})
 }
 
 function cleanDist() {
@@ -73,17 +115,17 @@ function build() {
 }
 
 function watching() {
-	watch(['app/scss/**/*.scss'], styles);
-	watch(['app/js/**/*.js', '!app/js/main.min.js'], scripts);
-	watch(['app/*.html']).on('change', browserSync.reload);
+	watch(['app/scss/**/*.scss'], styles)
+	watch(['app/js/**/*.js', '!app/js/main.min.js'], scripts)
+	watch(['app/*.html']).on('change', browserSync.reload)
 }
 
-exports.styles = styles;
-exports.watching = watching;
-exports.browsersync = browsersync;
-exports.scripts = scripts;
-exports.images = images;
-exports.cleanDist = cleanDist;
+exports.styles = styles
+exports.watching = watching
+exports.browsersync = browsersync
+exports.scripts = scripts
+exports.images = images
+exports.cleanDist = cleanDist
 
 
 exports.build = series(cleanDist, images, build);
