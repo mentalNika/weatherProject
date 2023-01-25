@@ -4,4 +4,14 @@ class OpenWeatherClient {
     makeApiCallUrl({ lat, lon, exclude, lang }) {
         return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}&exclude=${exclude}&appid=${this.api_key}`
     }
+    async fetchCurrent(...opts) {
+        return await fetch({
+            url: this.makeApiCallUrl({
+
+            })
+        })
+    }
+}
+class YandexGeocoderClient {
+
 }
