@@ -19,67 +19,83 @@
 
 		<!-- див контейнер -->
 		<div class="days-container">
-			<!-- Див для блока -->
-			<div class="actual-day">
-				<h2 class="actual-day__header">Москва</h2>
-				<p class="actual-day__time">Сейчас 22:49</p>
+			<div class="days-container__actual-day-sun-card-wrapper">
+				<!-- Див для блока -->
+				<div class="actual-day">
+					<h2 class="actual-day__header">Москва</h2>
+					<p class="actual-day__time">Сейчас 22:49</p>
 
-				<ul class="actual-day__temp-list">
-					<li class="actual-day__temp">+6&#176;</li>
-					<img src="images/weather-icons/day/cloud.png" alt="">
-					<li class="actual-day__feel">Облачно</li>
-				</ul>
+					<ul class="actual-day__temp-list">
+						<li class="actual-day__temp">+6&#176;</li>
+						<img src="images/weather-icons/day/cloud.png" alt="">
+						<li class="actual-day__feel">Облачно</li>
+					</ul>
 
-				<ul class="actual-day__indicators">
-					<li class="actual-day__indicators-item">
-						<p class="actual-day__indicators-text actual-day__indicators--wind-i">2,9 м/с, СВ</p>
-					</li>
-					<li class="actual-day__indicators-item">
-						<p class="actual-day__indicators-text actual-day__indicators--humadity-i">70%</p>
-					</li>
-					<li class="actual-day__indicators-item">
-						<p class="actual-day__indicators-text actual-day__indicators--preasure-i">772 мм рт.ст</p>
-					</li>
-				</ul>
+					<ul class="actual-day__indicators">
+						<li class="actual-day__indicators-item">
+							<p class="actual-day__indicators-text actual-day__indicators--wind-i">2,9 м/с, СВ</p>
+						</li>
+						<li class="actual-day__indicators-item">
+							<p class="actual-day__indicators-text actual-day__indicators--humadity-i">70%</p>
+						</li>
+						<li class="actual-day__indicators-item">
+							<p class="actual-day__indicators-text actual-day__indicators--preasure-i">772 мм рт.ст</p>
+						</li>
+					</ul>
 
-				<!-- Свайпер для актуального дня -->
-				<div class="image-slider swiper-container">
-					<div class="image-slider__wrapper swiper-wrapper">
-						<div class="image-slider__slide swiper-slide">
+					<!-- Свайпер для актуального дня -->
+					<div class="image-slider swiper-container">
+						<div class="image-slider__wrapper swiper-wrapper">
+							<div class="image-slider__slide swiper-slide">
 
-							<ul class="image-slider__list">
-								<li class="image-slider__item">
-									<p class="image-slider__date">18:00</p>
-									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
-									<p>+7&#176;</p>
-								</li>
-								<li class="image-slider__item">
-									<p class="image-slider__date">18:00</p>
-									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
-									<p>+7&#176;</p>
-								</li>
-								<li class="image-slider__item">
-									<p class="image-slider__date">18:00</p>
-									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
-									<p>+7&#176;</p>
-								</li>
-								<li class="image-slider__item">
-									<p class="image-slider__date">18:00</p>
-									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
-									<p>+7&#176;</p>
-								</li>
-								<li class="image-slider__item">
-									<p class="image-slider__date">18:00</p>
-									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
-									<p>+7&#176;</p>
-								</li>
-							</ul>
+								<ul class="image-slider__list">
+									<li class="image-slider__item">
+										<p class="image-slider__date">18:00</p>
+										<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+										<p>+7&#176;</p>
+									</li>
+									<li class="image-slider__item">
+										<p class="image-slider__date">18:00</p>
+										<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+										<p>+7&#176;</p>
+									</li>
+									<li class="image-slider__item">
+										<p class="image-slider__date">18:00</p>
+										<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+										<p>+7&#176;</p>
+									</li>
+									<li class="image-slider__item">
+										<p class="image-slider__date">18:00</p>
+										<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+										<p>+7&#176;</p>
+									</li>
+									<li class="image-slider__item">
+										<p class="image-slider__date">18:00</p>
+										<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+										<p>+7&#176;</p>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
+					<!-- / -->
 				</div>
-				<!-- / -->
-			</div>
 
+				<div class="sun-card">
+					<ul class="sun-card__list">
+						<li class="sun-card__header">
+							<h3 class="sun-card__title">Световой день</h3>
+						</li>
+						<li class="sun-card__header">
+							<p class="sun-card__time">9ч 31 мин</p>
+						</li>
+					</ul>
+					<div class="sun-card__sunrise-sunset-icon"></div>
+					<div class="sun-card__earth">
+						<div class="earth-right_3 sun-card__earth-icon"></div>
+					</div>
+				</div>
+			</div>
 
 			<!-- Свайпер погоды на 7 дней -->
 			<div class="seven-days">
@@ -90,30 +106,30 @@
 							<ul class="seven-days__list">
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Вчера</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">20 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
 									<p class="seven-days__condition">+11&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Сегодня</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">21 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
-									<p class="seven-days__condition">+11&#176;</p>
+									<p class="seven-days__condition">+14&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Пн</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">22 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
-									<p class="seven-days__condition">+11&#176;</p>
+									<p class="seven-days__condition">+8&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Вт</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">23 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
-									<p class="seven-days__condition">+11&#176;</p>
+									<p class="seven-days__condition">+18&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
@@ -125,37 +141,23 @@
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Чт</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">25 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
 									<p class="seven-days__condition">+11&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Пт</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">26 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/day/308.png" alt="иконка солнца">
 									<p class="seven-days__condition">+12&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Сб</p>
-									<p class="seven-days__date-indecator">24 янв</p>
+									<p class="seven-days__date-indecator">27 янв</p>
 									<img class="seven-days__icon" src="images/weather-icons/night/308.png" alt="иконка луны">
 									<p class="seven-days__condition">+8&#176;</p>
-									<p class="seven-days__date-indecator">Ясно</p>
-								</li>
-								<Li class="seven-days__item">
-									<p class="seven-days__condition">Вс</p>
-									<p class="seven-days__date-indecator">24 янв</p>
-									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
-									<p class="seven-days__condition">+11&#176;</p>
-									<p class="seven-days__date-indecator">Ясно</p>
-								</li>
-								<Li class="seven-days__item">
-									<p class="seven-days__condition">Пн</p>
-									<p class="seven-days__date-indecator">24 янв</p>
-									<img class="seven-days__icon" src="images/weather-icons/night/308.png" alt="иконка дождя">
-									<p class="seven-days__condition">+11&#176;</p>
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 							</ul>
@@ -164,7 +166,7 @@
 					</div>
 				</div>
 			</div>
-
+			<!-- / -->
 
 		</div>
 
