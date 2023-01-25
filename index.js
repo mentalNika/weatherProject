@@ -6,9 +6,6 @@ class OpenWeatherClient {
     }
     async fetchCurrent(...opts) {
         return await fetch({
-            url: this.makeApiCallUrl({
-
-            })
         })
     }
 }
