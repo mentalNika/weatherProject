@@ -1,0 +1,51 @@
+.seven-days {
+	padding: 2rem;
+	margin-bottom: 1rem;
+	background: rgba(126, 125, 125, 0.25);
+	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	// border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 20px;
+	z-index: 1;
+}
+
+.seven-days__header {
+	padding-bottom: 0.7rem;
+	font-size: 1.9rem;
+	font-weight: 400;
+}
+
+.seven-days__list {
+	margin-bottom: 0.5rem;
+	display: flex;
+	justify-content: space-between;
+	font-size: 1.2rem;
+	font-weight: 300;
+}
+
+.seven-days__item {
+	padding-top: 0.2rem;
+	max-width: 6rem;
+	text-align: center;
+	font-size: 1.2rem;
+	line-height: 1.7rem;
+	font-weight: 300;
+}
+
+.seven-days__condition {
+	font-size: 1.3rem;
+	font-weight: 400;
+}
+
+.seven-days__date-indecator {
+	color: hsla(0, 0%, 100%, 0.63);
+}
+
+.seven-days__icon {
+	margin: 0 auto;
+	display: block;
+	max-width: 100%;
+	width: 5rem;
+	height: 5rem;
+}
