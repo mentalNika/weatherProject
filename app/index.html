@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<title>Погода</title>
+	<link rel="stylesheet" href="css/style.min.css">
+</head>
+
+<body>
+	<div class="weather">
+		<aside class="sidebar">
+			<form class="sidebar__form" action="#">
+				<input class="sidebar__search" type="text" placeholder="Выбрать другой город...">
+				<button class="sidebar__submit-btn" type="button">
+					<i class="fa fa-search icon i-hover"></i>
+				</button>
+			</form>
+
+			<ul class="sidebar__list">
+				<li class="sidebar__item">
+					<p class="sidebar-text">
+						Геленджик
+					</p>
+				</li>
+				<li class="sidebar__item">
+					<p class="sidebar-text">
+						Краснодар
+					</p>
+				</li>
+				<li class="sidebar__item">
+					<p class="sidebar-text">
+						Новороссийск
+					</p>
+				</li>
+				<li class="sidebar__item">
+					<p class="sidebar-text">
+						Сочи
+					</p>
+				</li>
+			</ul>
+
+			<div class="sidebar__details">
+				<h2 class="sidebar__header">Подробнее о погоде</h2>
+				<ul class="sidebar__list">
+					<li class="sidebar__item sidebar__item_details">
+						<p class="sidebar__text sidebar__text_details">Облачность</p>
+						<p class="sidebar__indicators">72%</p>
+					</li>
+
+					<li class="sidebar__item sidebar__item_details">
+						<p class="sidebar__text sidebar__text_details">Влажность</p>
+						<p class="sidebar__indicators">56%</p>
+					</li>
+
+					<li class="sidebar__item sidebar__item_details">
+						<p class="sidebar__text sidebar__text_details">Ветер</p>
+						<p class="sidebar__indicators">7 км/ч</p>
+					</li>
+					<li class="sidebar__item sidebar__item_details">
+						<p class="sidebar__text sidebar__text_details">Давление</p>
+						<p class="sidebar__indicators">750 мм рт.ст</p>
+					</li>
+				</ul>
+				<a class="sidebar__btn" href="days.html">Прогноз на несколько дней</a>
+			</div>
+		</aside>
+
+		<div class="container">
+			<header class="weather__header">
+				<h1 class="weather__name">погода.</h1>
+			</header>
+
+			<main class="main">
+				<h2 class="weather__temp">16&#176;</h2>
+				<div class="weather__city-details">
+					<div class="weather__city-details-wrapper">
+						<h2 class="weather__city">Москва</h2>
+						<p class="weather__datetime">
+							<time datetime="2023-09-10 17:20">17:20 - Пятница, 12 Сент </time>
+						</p>
+					</div>
+					<div class="weather__icon">
+						<img class="weather__img" src="images/weather-icons/day/cloud.png" alt="Облачно">
+						<p class="weather__icon-text">Облачно</p>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+
+	<script src="https://kit.fontawesome.com/def1ddea5c.js" crossorigin="anonymous"></script>
+	<script src="js/main.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+html,
+body {
+	height: 100%;
+	font-family: 'Rubik', 'Roboto', 'Helvetica', sans-serif;
+	background-color: black;
+	color: #ffffff;
+
+	@include breakpoint($xs) {
+		font-size: 0.7rem;
+	}
+
+	@include breakpoint($xxxs) {
+		font-size: 0.6rem;
+	}
+}
+
+
+
+
+
+

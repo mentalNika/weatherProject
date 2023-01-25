@@ -1,0 +1,23 @@
+.weekend {
+	height: 100%;
+	font-size: 1.2rem;
+	background-image: url(../images/weather-images/day/moon.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	overflow-x:hidden;  /*для горизонтального*/
+}
+
+.weekend::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 0;
+}
+
+
+

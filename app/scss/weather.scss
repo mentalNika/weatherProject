@@ -1,0 +1,118 @@
+.weather {
+	display: flex;
+	height: 100%;
+	background-color: black;
+	background-image: url(../images/weather-images/day/cloud1.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow-x:hidden;  /*для горизонтального*/
+
+
+
+	@include breakpoint($l) {
+		flex-direction: column;
+		flex-direction: column-reverse;
+	}
+}
+
+.weather::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 0;
+}
+
+.weather__header {
+	text-align: right;
+}
+
+.weather__name {
+	font-size: 1.4rem;
+
+	@include breakpoint($xxs) {
+		font-size: 1rem;
+	}
+}
+
+.weather__temp {
+	padding-right: 0.3rem;
+	line-height: 1.2;
+	font-size: 8rem;
+	font-weight: 600;
+
+	@include breakpoint($xxs) {
+		font-size: 7rem;
+	}
+}
+
+.weather__city-details-wrapper {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 2rem;
+}
+
+.weather__city-details {
+	display: flex;
+}
+
+.weather__city {
+	font-size: 4rem;
+	font-weight: 400;
+
+	
+	@include breakpoint($xxs) {
+		font-size: 2.5rem;
+	}
+}
+
+.weather__datetime {
+	font-size: 1rem;
+	font-weight: 300;
+
+	
+	@include breakpoint($xxs) {
+		font-size: 1rem;
+	}
+}
+
+.weather__icon {
+	display: flex;
+	flex-direction: column;
+	padding-left: 3rem;
+	max-width: 100%;
+	height: auto;
+}
+
+.weather__img {
+	width: 4rem;
+	height: 4rem;
+	margin-bottom: 0;
+	margin-top: 0.9rem;
+
+	
+	@include breakpoint($xxs) {
+		width: 3rem;
+		height: 3rem;
+		margin-top: 0.1rem;
+	}
+}
+
+.weather__icon-text {
+	line-height: 1;
+	font-weight: 300;
+
+	@include breakpoint($xs) {
+		font-size: 1rem;
+	}
+
+
+	@include breakpoint($xxs) {
+		font-size: 1rem;
+	}
+}
+

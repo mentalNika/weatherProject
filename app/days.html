@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<title>Погода</title>
+	<link rel="stylesheet" href="css/style.min.css">
+</head>
+
+<body>
+
+
+	<main class="weekend">
+
+		<h1>погода.</h1>
+
+		<!-- див контейнер -->
+		<div class="days-container">
+			<!-- Див для блока -->
+			<div class="actual-day">
+				<h2 class="actual-day__header">Москва</h2>
+				<p class="actual-day__time">Сейчас 22:49</p>
+
+				<ul class="actual-day__temp-list">
+					<li class="actual-day__temp">+6&#176;</li>
+					<img src="images/weather-icons/day/cloud.png" alt="">
+					<li class="actual-day__feel">Облачно</li>
+				</ul>
+
+				<ul class="actual-day__indicators">
+					<li class="actual-day__indicators-item">
+						<p class="actual-day__indicators-text actual-day__indicators--wind-i">2,9 м/с, СВ</p>
+					</li>
+					<li class="actual-day__indicators-item">
+						<p class="actual-day__indicators-text actual-day__indicators--humadity-i">70%</p>
+					</li>
+					<li class="actual-day__indicators-item">
+						<p class="actual-day__indicators-text actual-day__indicators--preasure-i">772 мм рт.ст</p>
+					</li>
+				</ul>
+
+				<div class="image-slider swiper-conrainer">
+					<div class="image-slider__wrapper swiper-wrapper">
+						<div class="image-slider__slide swiper-slide">
+
+							<ul class="image-slider__list">
+								<li class="image-slider__item">
+									<p class="image-slider__date">18:00</p>
+									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+									<p>+7&#176;</p>
+								</li>
+								<li class="image-slider__item">
+									<p class="image-slider__date">18:00</p>
+									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+									<p>+7&#176;</p>
+								</li>
+								<li class="image-slider__item">
+									<p class="image-slider__date">18:00</p>
+									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+									<p>+7&#176;</p>
+								</li>
+								<li class="image-slider__item">
+									<p class="image-slider__date">18:00</p>
+									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+									<p>+7&#176;</p>
+								</li>
+								<li class="image-slider__item">
+									<p class="image-slider__date">18:00</p>
+									<img class="image-slider__icon" src="images/weather-icons/night/moon.png" alt="иконка луны">
+									<p>+7&#176;</p>
+								</li>
+							</ul>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+		</div>
+
+	</main>
+
+
+
+
+
+	<script src="https://kit.fontawesome.com/def1ddea5c.js" crossorigin="anonymous"></script>
+	<script src="js/main.min.js"></script>
+</body>
+
+</html>
