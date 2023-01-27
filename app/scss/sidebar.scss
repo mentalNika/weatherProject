@@ -1,11 +1,10 @@
 .sidebar {
 	width: 45%;
 	height: 100%;
-	background: rgba(110, 110, 110, 0.25);
+	background: $transparateblack;
 	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.18);
 	z-index: 1;
 	padding: 4rem 4rem;
 	overflow-x: hidden;
@@ -71,44 +70,6 @@
 	}
 }
 
-.sidebar__submit-btn {
-	position: absolute;
-	top: 0;
-	right: 0;
-	
-	color: #ffffff;
-	background-color: $orange;
-	border: none;
-	cursor: pointer;
-
-	@include breakpoint($xl) {
-		top: 8px;
-
-	@include breakpoint($l) {
-		right: auto;
-		left: 350px;
-	}
-
-	@include breakpoint($s) {
-		left: 330px;
-	}
-
-	@include breakpoint($xs) {
-		left: 230px;
-	}
-
-	@include breakpoint($xxxs) {
-		left: 200px;
-	}
-	}
-
-}
-
-.sidebar__submit-btn:hover {
-	background-color: darken($orange, 3%);
-	transition: 0.5s;
-}
-
 .icon {
 	padding: 2.56rem 2.56rem;
 
@@ -162,27 +123,4 @@
 .sidebar__indicators {
 	font-size: 1.2rem;
 	font-weight: 300;
-}
-
-.sidebar__btn {
-	display: block;
-	margin: 0 auto;
-	padding: 0.9rem 0.9rem;
-	width: 100%;
-	text-align: center;
-	font-family: inherit;
-	font-size: 1.2rem;
-	font-weight: 400;
-	color: $white;
-	background-color: $orange;
-	box-shadow:0 8px 32px 0 rgba(0, 0, 0, 0.5);
-	border: none;
-	opacity: 90%;
-	cursor: pointer;
-}
-
-.sidebar__btn:hover {
-	color: darken($white, 3%);
-	background-color: darken($orange, 5%);
-	transition: 0.5s;
 }
