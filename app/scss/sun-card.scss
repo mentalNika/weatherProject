@@ -60,6 +60,12 @@
 	top: 50%;
 	margin-left: -135px;
 	margin-top: -53.5px;
+
+	@include breakpoint($xs) {
+		background-size: 170px 70px;
+		margin-left: -86px;
+		margin-top: -33.5px;
+	}
 }
 
 .earth-right_3 {
