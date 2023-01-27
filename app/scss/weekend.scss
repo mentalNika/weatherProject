@@ -1,7 +1,7 @@
 .weekend {
 	height: 100%;
 	font-size: 1.2rem;
-	background-image: url(../images/weather-images/day/moon.jpg);
+	background-image: url(../images/weather-images/day/cloud.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
@@ -27,12 +27,12 @@
 	display: block;
 	width: 100%;
 	padding: 1.5rem 1.5rem;
-	background: rgba(110, 110, 110, 0.25);
+	background: $orange;
 	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 	backdrop-filter: blur(10px);
-	border-radius: 20px;
 	color: $white;
 	font-size: 1.3rem;
+	opacity: 90%;
 }
 
 

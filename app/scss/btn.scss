@@ -1,0 +1,55 @@
+.btn {
+	display: block;
+	margin: 0 auto;
+	padding: 1.3rem 1.3rem;
+	// width: 100%;
+	text-align: center;
+	font-family: inherit;
+	font-size: 1.2rem;
+	font-weight: 400;
+	color: $white;
+	background-color: $orange;
+	box-shadow:0 8px 32px 0 rgba(0, 0, 0, 0.5);
+	border: none;
+	opacity: 90%;
+	cursor: pointer;
+	
+	&--submit {
+		padding: 0;
+		position: absolute;
+		top: 0;
+		right: 0;
+		
+		color: #ffffff;
+		background-color: $orange;
+		border: none;
+		cursor: pointer;
+	
+		@include breakpoint($xl) {
+			top: 8px;
+		}
+	
+		@include breakpoint($l) {
+			right: auto;
+			left: 350px;
+		}
+	
+		@include breakpoint($s) {
+			left: 330px;
+		}
+	
+		@include breakpoint($xs) {
+			left: 230px;
+		}
+	
+		@include breakpoint($xxxs) {
+			left: 200px;
+		}
+	}
+}
+
+.btn:hover {
+	color: darken($white, 3%);
+	background-color: darken($orange, 5%);
+	transition: 0.5s;
+}

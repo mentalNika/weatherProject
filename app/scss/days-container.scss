@@ -8,4 +8,8 @@
 .days-container__actual-day-sun-card-wrapper {
 	display: flex;
 	justify-content: space-between;
+
+	@include breakpoint($m) {
+		flex-direction: column;
+	}
 }
