@@ -4,10 +4,10 @@
 	
 	max-height: 950px;
 	height: 100%;
-	padding: 3rem 6rem 17rem 20rem;
+	padding: 3rem 6rem 17rem 17rem;
 
 	@include breakpoint($xl) {
-		padding: 3rem 4rem 17rem 10rem;
+		padding: 3rem 4rem 17rem 7rem;
 	}
 
 	@include breakpoint($l) {
@@ -32,7 +32,7 @@
 	}
 
 	@include breakpoint($xxxs) {
-		padding: 1rem 1rem 4rem 1rem;
+		padding: 1rem 1rem 6rem 1rem;
 	}
 
 }

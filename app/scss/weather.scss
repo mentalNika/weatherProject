@@ -35,7 +35,7 @@
 	font-size: 1.4rem;
 
 	@include breakpoint($xxs) {
-		font-size: 1rem;
+		font-size: 1.3rem;
 	}
 }
 
@@ -46,7 +46,9 @@
 	font-weight: 600;
 
 	@include breakpoint($xxs) {
-		font-size: 7rem;
+		font-size: 5rem;
+		padding-bottom: 1.5rem;
+		padding-right: 1rem;
 	}
 }
 
@@ -66,26 +68,27 @@
 
 	
 	@include breakpoint($xxs) {
-		font-size: 2.5rem;
+		font-size: 2rem;
 	}
 }
 
 .weather__datetime {
-	font-size: 1rem;
+	font-size: 1.5rem;
 	font-weight: 300;
 
 	
 	@include breakpoint($xxs) {
-		font-size: 1rem;
+		font-size: 1.3rem;
 	}
 }
 
 .weather__icon {
+	padding-left: 3rem;
 	display: flex;
 	flex-direction: column;
-	padding-left: 3rem;
 	max-width: 100%;
 	height: auto;
+	align-items: center;
 }
 
 .weather__img {
@@ -93,26 +96,21 @@
 	height: 4rem;
 	margin-bottom: 0;
 	margin-top: 0.9rem;
-
 	
 	@include breakpoint($xxs) {
 		width: 3rem;
 		height: 3rem;
-		margin-top: 0.1rem;
+		margin-top: 0.7rem;
 	}
 }
 
 .weather__icon-text {
+	font-size: 1.5rem;
 	line-height: 1;
 	font-weight: 300;
 
-	@include breakpoint($xs) {
-		font-size: 1rem;
-	}
-
-
 	@include breakpoint($xxs) {
-		font-size: 1rem;
+		font-size: 1.3rem;
 	}
 }
 
