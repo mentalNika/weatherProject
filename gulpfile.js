@@ -8,48 +8,6 @@ const autoprefixer = require('gulp-autoprefixer')
 const imagemin = require('gulp-imagemin')
 const del = require('del')
 
-const { JSDOM } = require('jsdom')
-
-// API погоды
-class OpenWeatherClient {
-    api_key = '3f32c6174a894c81c2ce9542fa42441d'
-    base_url = 'https://api.openweathermap.org/data/3.0/onecall'
-    makeApiCallUrl({ lat, lon, exclude, lang }) {
-        return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}&exclude=${exclude}&appid=${this.api_key}`
-    }
-    async fetchCurrent(...opts) {
-        return await fetch({
-            url: this.makeApiCallUrl({
-                
-            })
-        })
-    }
-}
-// отвечает за список городов и регионов рф
-class LocDB {
-	JSDOM = JSDOM
-	base_url = 'https://locdb.ru'
-	async fetchAllCities() {
-		const res = await fetch({
-			url: this.base_url
-		})
-		const html = await res.text()
-		const { window } = new JSDOM(html)
-		const columns = window.document.querySelectorAll('#localApp > div > div > div:nth-child(3) > div > div > div')
-		/** @type {HTMLCollection} */
-		let regionEntries = new HTMLCollection();
-		columns.forEach(c => {
-			regionEntries.push(
-				// ох уж эти дети
-				((c.children)[0].children)[0].children
-			)
-		})
-		const regionNameRegex = /[0-9].*\\n\s*/gm
-		const regions = [...regionEntries].map(entry => entry.textContent.trim().replace(regionNameRegex, ''))
-		const cities = []
-	}
-}
-
 function browsersync() {
 	browserSync.init({
 		server: {
@@ -130,5 +88,3 @@ exports.cleanDist = cleanDist
 
 exports.build = series(cleanDist, images, build);
 exports.default = parallel(styles, scripts, browsersync, watching);
-
-
