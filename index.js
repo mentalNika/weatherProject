@@ -27,13 +27,15 @@ class LocDB {
 	JSDOM = JSDOM
 	base_url = 'https://locdb.ru'
 	/** @type {string[]} */
-	regions
+	regions = []
 	/** @type {number[]} */
-	regionIDs
+	regionIDs = []
 	/** @type {string[]} */
-	cities
+	cities = []
 	/** @type {number[]} */
-	cityIDs
+	cityIDs = []
+	/** @type {Element[]} */
+	regionEntries = []
 	async fetchAllCities() {
 		console.log('[locdb] Загрузка базы данных...')
 		const res = await fetch(this.base_url)
@@ -42,19 +44,23 @@ class LocDB {
 		console.log('[locdb] Подготовка списков регионов...')
 		const { window } = new JSDOM(html)
 		const columns = window.document.querySelectorAll('#localApp > div > div > div:nth-child(3) > div > div > div')
-		/** @type {Element[]} */
-		let regionEntries = [];
-		columns.forEach(c => {
-			this.regionEntries.push(
-				// ох уж эти дети
-				((c.children)[0].children)[0].children[0]
-			)
+		columns.forEach(column => {
+			[...column.children[0].children[0].children].forEach(element => {
+				this.regionEntries.push(element)
+			})
 		})
-		const regionNameRegex = /[0-9].*\\n\s*/gm
-		this.regions = regionEntries.map(entry => entry.textContent.trim().replace(regionNameRegex, ''))
+		const regionNameRegex = /[0-9].*\n\s*/
+		const regionIDRegex = /[0-9]{2}/
+		this.regions = this.regionEntries.map(entry => entry.textContent.trim().replace(regionNameRegex, '')).filter(region => {
+			if (!region) return false
+			return region
+		})
+		this.regionIDs = this.regionEntries.filter(region => {
+			if (!region.textContent) return false
+			return region
+		}).map(entry => regionIDRegex.exec(entry.textContent.trim())[0])
 		console.log('[locdb] Подготовка списка населённых пунктов...')
-		this.cities = []
-		regions.forEach(region => {
+		this.regions.forEach(region => {
 			// зайти на каждый регион
 			// загрузить все населённые пункты регионов
 			// cities.push() все города
