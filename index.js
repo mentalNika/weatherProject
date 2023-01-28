@@ -5,6 +5,12 @@ const { exec } = require('child_process')
 class OpenWeatherClient {
     api_key = '3f32c6174a894c81c2ce9542fa42441d'
     base_url = 'https://api.openweathermap.org/data/3.0/onecall'
+	/** @type {LocDB} */
+	locdbInstance
+	/** @param {LocDB} locdb Класс */
+	constructor(locdb) {
+		this.locdbInstance = locdb
+	}
     makeApiCallUrl({ lat, lon, exclude, lang }) {
         return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}&exclude=${exclude}&appid=${this.api_key}`
     }
@@ -20,6 +26,14 @@ class OpenWeatherClient {
 class LocDB {
 	JSDOM = JSDOM
 	base_url = 'https://locdb.ru'
+	/** @type {string[]} */
+	regions
+	/** @type {number[]} */
+	regionIDs
+	/** @type {string[]} */
+	cities
+	/** @type {number[]} */
+	cityIDs
 	async fetchAllCities() {
 		console.log('[locdb] Загрузка базы данных...')
 		const res = await fetch(this.base_url)
@@ -37,9 +51,9 @@ class LocDB {
 			)
 		})
 		const regionNameRegex = /[0-9].*\\n\s*/gm
-		const regions = regionEntries.map(entry => entry.textContent.trim().replace(regionNameRegex, ''))
+		this.regions = regionEntries.map(entry => entry.textContent.trim().replace(regionNameRegex, ''))
 		console.log('[locdb] Подготовка списка населённых пунктов...')
-		const cities = []
+		this.cities = []
 		regions.forEach(region => {
 			// зайти на каждый регион
 			// загрузить все населённые пункты регионов
