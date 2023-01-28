@@ -93,11 +93,11 @@
 
 .sidebar__item {
 	padding-bottom: 2.5rem;
-}
 
-.sidebar__item_details {
-	display: flex;
-	justify-content: space-between;
+	&--details {
+		display: flex;
+		justify-content: space-between;
+	}
 }
 
 .sidebar-text {
@@ -107,6 +107,7 @@
 	opacity: 90%;
 	cursor: pointer;
 }
+
 
 .sidebar__text_details {
 	font-size: 1.2rem;

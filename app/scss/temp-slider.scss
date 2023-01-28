@@ -1,0 +1,28 @@
+.temp-slider__list {
+	margin: 1rem 2rem 0 2rem;
+	min-width: 0;
+	display: flex;
+	justify-content: space-between;
+}
+
+.temp-slider__item {
+	padding: 0.2rem;
+	max-width: 4rem;
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: 300;
+}
+
+.temp-slider__item:hover {
+	border-radius: 10px;
+	box-shadow:0 8px 10px 0 rgba(0, 0, 0, 0.3);
+	transition: 0.4s;
+}
+
+.temp-slider__icon {
+	margin: 0 auto;
+	display: block;
+	max-width: 100%;
+	width: 3rem;
+	height: 3rem;
+}
