@@ -71,22 +71,23 @@
 .earth-right_3 {
 	background-size: 90px 90px;
 	background-image: url(../images/weather-icons/earth/earth.png);
+	-webkit-animation-name: rotation;
+	-webkit-animation-duration: 10s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+	-moz-animation-name: rotation;
+	-moz-animation-duration: 10s;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-timing-function: linear;
+	-o-animation-name: rotation;
+	-o-animation-duration: 10s;
+	-o-animation-iteration-count: infinite;
+	-o-animation-timing-function: linear;
 	animation-name: rotation;
 	animation-duration: 10s;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
 }
-
-// Rotation
-@keyframes rotation {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(350deg);
-	}
-}
-// /
 
 .sun-card__earth-icon {
 	width: 90px;
