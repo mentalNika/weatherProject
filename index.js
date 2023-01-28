@@ -45,7 +45,7 @@ class LocDB {
 		/** @type {Element[]} */
 		let regionEntries = [];
 		columns.forEach(c => {
-			regionEntries.push(
+			this.regionEntries.push(
 				// ох уж эти дети
 				((c.children)[0].children)[0].children[0]
 			)
