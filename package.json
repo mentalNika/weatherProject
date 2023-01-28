@@ -21,7 +21,8 @@
 		"sass": "^1.57.1"
 	},
 	"dependencies": {
+		"gulp-cli": "2.3.0",
 		"jsdom": "^21.1.0",
-		"gulp-cli": "2.3.0"
+		"xmlhttprequest": "^1.8.0"
 	}
 }
