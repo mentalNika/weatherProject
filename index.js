@@ -30,13 +30,15 @@ class LocDB {
 	regions = []
 	/** @type {number[]} */
 	regionIDs = []
+	/** @type {Element[]} */
+	regionEntries = []
 	/** @type {string[]} */
 	cities = []
 	/** @type {number[]} */
 	cityIDs = []
 	/** @type {Element[]} */
-	regionEntries = []
-	async fetchAllCities() {
+	cityEntries = []
+	async fetchAllRegions() {
 		console.log('[locdb] Загрузка базы данных...')
 		const res = await fetch(this.base_url)
 		console.log('[locdb] Преобразование ответа в HTML...')
@@ -59,16 +61,42 @@ class LocDB {
 			if (!region.textContent) return false
 			return region
 		}).map(entry => regionIDRegex.exec(entry.textContent.trim())[0])
+	}
+	async fetchAllCities() {
+		await this.fetchAllRegions()
 		console.log('[locdb] Подготовка списка населённых пунктов...')
-		this.regions.forEach(region => {
-			// зайти на каждый регион
-			// загрузить все населённые пункты регионов
-			// cities.push() все города
+		this.regionIDs.forEach(regionID => {
+			fetch(`${this.base_url}/info/region/10${regionID}`).then(async res => {
+				const html = await res.text()
+				const { window } = new JSDOM(html)
+				const columns = [...window.document.querySelectorAll('#localApp > div > div > div.col-12.mb-3 > div > div')[0].children]
+				columns.shift()
+				let str1, str2, str3, str4
+				columns.forEach(column => {
+					const bruh = [...column.children[0].children[0].children[0].children]
+					for (let i = 1; i < bruh.length; i++) {
+						const cityEntry = bruh[i]
+						if (!cityEntry.textContent || !isNaN(cityEntry.textContent)) return
+						if (i % 2) {
+							str1 = bruh[i - 1].textContent
+							str2 = cityEntry.textContent
+							str3 = `${str1} ${str2}`.replace(/ {2,}/gm, '')
+							if (/.{1,}\n\n(.{1,})/gm.test(str3)) {
+								str4 = /.{1,}\n\n(.{1,})/gm.exec(str3)[1]
+								this.cities.push(`${str3.replace(/.{1,}\n\n/gm, '')} (${str4})`)
+							} else {
+								this.cities.push(`${str3}`)
+							}
+						}
+						i++
+					}
+				})
+			})
 		})
 	}
 }
 const locdb = new LocDB()
-const openweather = new OpenWeatherClient()
+const openweather = new OpenWeatherClient(locdb)
 console.log('[index] Запуск gulp...')
 exec('gulp', {
 	stdio: 'pipe'
