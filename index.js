@@ -6,7 +6,6 @@ const server = new WebSocketServer({
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 
-// API погоды
 class YandexWeather {
     base_url = 'https://api.weather.yandex.ru/v2/informers'
     makeApiCallUrl({ lat, lon }) {
@@ -21,7 +20,6 @@ class YandexWeather {
 		})
     }
 }
-// отвечает за список городов и регионов рф
 class LocDB {
 	db = require('./db.json')
 	base_url = 'https://locdb.ru'
@@ -67,17 +65,16 @@ server.on('connection', socket => {
 				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
 				console.error(err)
 			})
+			const json = await resWeather.json()
+			console.log(json)
 			console.log('[websocket] Отправка информации о погоде пользователю...')
-			console.log(resWeather)
+			console.log(resCity.attributes.name)
 			socket.send(JSON.stringify({
 				action: 'response',
-				data: await resWeather.json(),
+				data: json,
 				city: resCity.attributes.name
 			}))
 		}
-		// socket.emit('res', {
-		// 	city: locdb.cities[diceCoefficientResults.indexOf({ diceCoefficient: closest })].attributes.name
-		// })
 	})
 	socket.on('disconnect', () => {
 		console.log(`[websocket] Пользователь отключился (${sockets.length} всего)`)

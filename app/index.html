@@ -25,7 +25,12 @@
 		ws.onmessage = msg => {
 			const message = JSON.parse(msg)
 			if (message.action == 'response') {
-				const currentWeather = message.data.message.fact
+				const currentWeather = message.data.fact
+				// температура
+				document.querySelector('body > div > div > main > h2').textContent = `${currentWeather.temp}°`
+				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > h2').textContent = message.data.city
+				let date = new Date(message.data.now_dt)
+				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > p > time').textContent = `${date.getHours()}:${date.getMinutes()} - ${date.toLocaleTimeString('ru-RU', { weekday: 'long' })}, ${date.toLocaleDateString('ru-RU', { day: 'numeric' })} ${date.toLocaleDateString('ru-RU', { month: 'short' })}`
 			}
 		}
 	</script>

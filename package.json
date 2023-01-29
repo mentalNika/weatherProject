@@ -9,24 +9,24 @@
 	"author": "Vadym Prokopchuk",
 	"license": "ISC",
 	"devDependencies": {
-		"browser-sync": "^2.26.13",
+		"browser-sync": "2.26.13",
 		"del": "6.0.0",
-		"gulp": "^4.0.2",
-		"gulp-autoprefixer": "^6.1.0",
-		"gulp-concat": "^2.6.1",
+		"gulp": "4.0.2",
+		"gulp-autoprefixer": "6.1.0",
+		"gulp-concat": "2.6.1",
 		"gulp-imagemin": "7.0.0",
 		"gulp-sass": "5.1.0",
 		"gulp-uglify-es": "3.0.0",
-		"jquery": "^3.6.1",
-		"sass": "^1.57.1"
+		"jquery": "3.6.1",
+		"sass": "1.57.1"
 	},
 	"dependencies": {
-		"bufferutil": "^4.0.7",
-		"dice-coefficient": "^2.1.1",
+		"bufferutil": "4.0.7",
+		"dice-coefficient": "2.1.1",
 		"gulp-cli": "2.3.0",
-		"jsdom": "^21.1.0",
-		"utf-8-validate": "^5.0.10",
-		"ws": "^8.12.0",
-		"xmlhttprequest": "^1.8.0"
+		"jsdom": "21.1.0",
+		"utf-8-validate": "5.0.10",
+		"ws": "8.12.0",
+		"xmlhttprequest": "1.8.0"
 	}
 }
