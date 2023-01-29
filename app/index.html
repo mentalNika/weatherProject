@@ -9,18 +9,35 @@
 	<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<title>Погода</title>
 	<link rel="stylesheet" href="css/style.min.css">
+	<script>
+		const ws = new WebSocket('ws://localhost:8080')
+		ws.onopen = () => {
+			document.querySelector('body > div > aside > button > i').onclick = () => {
+				console.log('sent')
+				ws.send(JSON.stringify({
+					action: 'currentWeather',
+					data: {
+						city: document.querySelector('body > div > aside > input').value
+					}
+				}))
+			}
+		}
+		ws.onmessage = msg => {
+			const message = JSON.parse(msg)
+			if (message.action == 'response') {
+				const currentWeather = message.data.message.fact
+			}
+		}
+	</script>
 </head>
-
 <body>
 	<div class="weather">
 
 		<aside class="sidebar"> <!-- Сайдбар -->
-			<form class="sidebar__form" action="post">
-				<input class="sidebar__search" type="text" placeholder="Выбрать другой город...">
-				<button class="btn btn--submit" type="button">
-					<i class="fa fa-search icon i-hover"></i>
-				</button>
-			</form>
+			<input class="sidebar__search" type="text" placeholder="Найти другой город...">
+			<button class="btn btn--submit">
+				<i class="fa fa-search icon i-hover"></i>
+			</button>
 
 			<ul class="sidebar__list">
 				<li class="sidebar__item">

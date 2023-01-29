@@ -1,25 +1,25 @@
 const { JSDOM } = require('jsdom')
 const { exec } = require('child_process')
+const { WebSocketServer } = require('ws')
+const server = new WebSocketServer({
+	port: 8080
+})
+/** @type {import('ws').WebSocket[]} */
+let sockets = []
 
 // API погоды
-class OpenWeatherClient {
-    api_key = '3f32c6174a894c81c2ce9542fa42441d'
-    base_url = 'https://api.openweathermap.org/data/3.0/onecall'
-	/** @type {LocDB} */
-	locdbInstance
-	/** @param {LocDB} locdb Класс */
-	constructor(locdb) {
-		this.locdbInstance = locdb
-	}
-    makeApiCallUrl({ lat, lon, exclude, lang }) {
-        return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}&exclude=${exclude}&appid=${this.api_key}`
+class YandexWeather {
+    base_url = 'https://api.weather.yandex.ru/v2/informers'
+    makeApiCallUrl({ lat, lon }) {
+        return `${this.base_url}?lat=${lat}&lon=${lon}`
     }
-    async fetchCurrent(...opts) {
-        return await fetch({
-            url: this.makeApiCallUrl({
-                ...opts
-            })
-        })
+    async fetchCurrent({ lat, lon }) {
+        return await fetch(this.makeApiCallUrl({ lat, lon }), {
+			method: 'GET',
+			headers: new Headers({
+				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
+			})
+		})
     }
 }
 // отвечает за список городов и регионов рф
@@ -40,7 +40,52 @@ class LocDB {
 }
 
 const locdb = new LocDB()
-const openweather = new OpenWeatherClient(locdb)
+const yandexweather = new YandexWeather()
+server.on('connection', socket => {
+	sockets.push(socket)
+	console.log(`[websocket] Новое соединение (${sockets.length} всего)`)
+	socket.on('message', async msg => {
+		let message = JSON.parse(msg)
+		console.log(message)
+		if (message.action == 'currentWeather') {
+			console.log(`[websocket] Запрос на текущую погоду в "${message.data.city}"`)
+			console.log('[index] Импорт "dice-coefficient"...')
+			const { diceCoefficient } = await import('dice-coefficient')
+			console.log(`[dice-coefficient] Поиск города "${message.data.city}" в locdb...`)
+			/** @type {{city: any, diceCoefficient: number}[]} */
+			const diceCoefficientResults = []
+			locdb.cities.forEach(city => {
+				const res = diceCoefficient(city.attributes.name, message.data.city)
+				diceCoefficientResults.push(res)
+			})
+			const closest = findClosest(1, diceCoefficientResults)
+			const resCity = locdb.cities[diceCoefficientResults.indexOf(closest)]
+			console.log(`[locdb] Самый похожий город к запросу "${message.data.city}": ${resCity.attributes.name}`)
+			console.log(`[yandexweather] Запрос погоды по координатам города ${resCity.attributes.name}`)
+			const resWeather = await yandexweather.fetchCurrent({
+				lat: resCity.attributes.point_lat,
+				lon: resCity.attributes.point_lon
+			}).catch(err => {
+				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
+				console.error(err)
+			})
+			console.log('[websocket] Отправка информации о погоде пользователю...')
+			console.log(resWeather)
+			socket.send(JSON.stringify({
+				action: 'response',
+				data: {
+					message: await resWeather.json()
+				}
+			}))
+		}
+		// socket.emit('res', {
+		// 	city: locdb.cities[diceCoefficientResults.indexOf({ diceCoefficient: closest })].attributes.name
+		// })
+	})
+	socket.on('disconnect', () => {
+		console.log(`[websocket] Пользователь отключился (${sockets.length} всего)`)
+	})
+})
 console.log('[index] Запуск gulp...')
 exec('gulp', {
 	stdio: 'pipe'
@@ -51,3 +96,9 @@ exec('gulp', {
 });
 
 locdb.getAllCities()
+/** @param {number} x @param {any[]} arr */
+function findClosest(x, arr) {
+	const indexArr = arr.map(k => { return Math.abs(k - x) })
+	const min = Math.min.apply(Math, indexArr)
+	return arr[indexArr.indexOf(min)]
+}
