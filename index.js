@@ -1,10 +1,9 @@
-const { JSDOM } = require('jsdom')
 const { exec } = require('child_process')
 const { WebSocketServer } = require('ws')
 const server = new WebSocketServer({
 	port: 8080
 })
-/** @type {import('ws').WebSocket[]} */
+/** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 
 // API погоды
@@ -24,7 +23,6 @@ class YandexWeather {
 }
 // отвечает за список городов и регионов рф
 class LocDB {
-	JSDOM = JSDOM
 	db = require('./db.json')
 	base_url = 'https://locdb.ru'
 	regions = this.db.elements[0].elements[0].elements
@@ -73,9 +71,8 @@ server.on('connection', socket => {
 			console.log(resWeather)
 			socket.send(JSON.stringify({
 				action: 'response',
-				data: {
-					message: await resWeather.json()
-				}
+				data: await resWeather.json(),
+				city: resCity.attributes.name
 			}))
 		}
 		// socket.emit('res', {
