@@ -8,8 +8,8 @@ let sockets = []
 
 class YandexWeather {
     base_url = 'https://api.weather.yandex.ru/v2/informers'
-    makeApiCallUrl({ lat, lon }) {
-        return `${this.base_url}?lat=${lat}&lon=${lon}`
+    makeApiCallUrl({ lat, lon, lang }) {
+        return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
     }
     async fetchCurrent({ lat, lon }) {
         return await fetch(this.makeApiCallUrl({ lat, lon }), {
@@ -60,7 +60,8 @@ server.on('connection', socket => {
 			console.log(`[yandexweather] Запрос погоды по координатам города ${resCity.attributes.name}`)
 			const resWeather = await yandexweather.fetchCurrent({
 				lat: resCity.attributes.point_lat,
-				lon: resCity.attributes.point_lon
+				lon: resCity.attributes.point_lon,
+				lang: 'ru-RU'
 			}).catch(err => {
 				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
 				console.error(err)

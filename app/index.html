@@ -30,7 +30,7 @@
 				// температура
 				document.querySelector('body > div > div > main > h2').textContent = `${currentWeather.temp}°`
 				// город
-				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > h2').textContent = message.data.city
+				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > h2').textContent = message.city
 				let date = new Date(message.data.now_dt)
 				// дата и время
 				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > p > time').textContent = `${date.getHours()}:${date.getMinutes()} - ${date.toLocaleTimeString('ru-RU', { weekday: 'long' })}, ${date.toLocaleDateString('ru-RU', { day: 'numeric' })} ${date.toLocaleDateString('ru-RU', { month: 'short' })}`
@@ -38,6 +38,27 @@
 		}
 		function setSearchBarText(text) {
 			document.querySelector('body > div > aside > input').value = text
+		}
+		const weatherConditionTranslations = {
+			clear: "Ясно",
+			"partly-cloudy": "Малооблачно",
+			cloudy: "Облачно с прояснениями",
+			overcast: "Пасмурно",
+			drizzle: "Морось",
+			"light-rain": "Небольшой дождь",
+			rain: "Дождь",
+			"moderate-rain": "Умеренно сильный дождь",
+			"heavy-rain": "Сильный дождь",
+			"continuous-heavy-rain": "Длительный сильный дождь",
+			showers: "Ливень",
+			"wet-snow": "Дождь со снегом",
+			"light-snow": "Небольшой снег",
+			snow: "Снег",
+			"snow-showers": "Снегопад",
+			hail: "Град",
+			thunderstorm: "Гроза",
+			"thunderstorm-with-rain": "Дождь с грозой",
+			"thunderstorm-with-hail": "Гроза с градом"
 		}
 	</script>
 </head>
