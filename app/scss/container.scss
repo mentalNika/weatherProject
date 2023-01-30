@@ -1,40 +1,11 @@
 .container {
-	// max-width: 1230px;
-	// width: 100%;
-	
-	max-height: 950px;
-	height: 100%;
-	padding: 1rem 1rem 17rem 1rem;
 	margin: 0 auto;
-
-	@include breakpoint($xl) {
-		// padding: 3rem 4rem 17rem 7rem;
-	}
-
+	max-height: 950px;
+	padding: 1rem 1rem 17rem 1rem;
+	
 	@include breakpoint($l) {
 		padding-top: 1rem;
 		padding-bottom: 3rem;
 		height: auto;
 	}
-
-	@include breakpoint($m) {
-		// padding: 3rem 4rem 3rem 10rem;
-	}
-
-	@include breakpoint($s) {
-		// padding: 3rem 4rem 4rem 1rem;
-	}
-
-	@include breakpoint($xs) {
-		// padding: 1rem 4rem 5rem 4rem;
-	}
-
-	@include breakpoint($xxs) {
-		// padding: 2rem 3rem 5rem 2rem;
-	}
-
-	@include breakpoint($xxxs) {
-		// padding: 1rem 1rem 6rem 1rem;
-	}
-
 }

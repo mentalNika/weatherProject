@@ -44,8 +44,19 @@
 	font-size: 8rem;
 	font-weight: 600;
 
+	@include breakpoint($m) {
+		font-size: 6rem;
+	}
+
 	@include breakpoint($xxs) {
 		font-size: 5rem;
+		padding-bottom: 1.5rem;
+		padding-right: 1rem;
+	}
+
+	@include breakpoint($xxxxs) {
+		font-size: 5rem;
+		padding-top: 2rem;
 		padding-bottom: 1.5rem;
 		padding-right: 1rem;
 	}
@@ -54,18 +65,29 @@
 .weather__city-details-wrapper {
 	display: flex;
 	flex-direction: column;
-	padding-bottom: 2rem;
 }
 
 .weather__city-details {
 	display: flex;
+	align-items: center;
+
+	@include breakpoint($xxxxs) {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		justify-items: center;
+		justify-content: center;
+	}
 }
 
 .weather__city {
 	font-size: 4rem;
 	font-weight: 400;
 
-	
+	@include breakpoint($m) {
+		font-size: 2rem;
+	}
+
 	@include breakpoint($xxs) {
 		font-size: 2rem;
 	}
@@ -75,6 +97,9 @@
 	font-size: 1.5rem;
 	font-weight: 300;
 
+	@include breakpoint($m) {
+		font-size: 1.4rem;
+	}
 	
 	@include breakpoint($xxs) {
 		font-size: 1.3rem;
@@ -88,6 +113,14 @@
 	max-width: 100%;
 	height: auto;
 	align-items: center;
+
+	@include breakpoint($m) {
+		padding-bottom: 32px;;
+	}
+
+	@include breakpoint($xxxxs) {
+		padding: 0;
+	}
 }
 
 .weather__img {
@@ -108,6 +141,10 @@
 	line-height: 1;
 	font-weight: 300;
 	text-align: center;
+
+	@include breakpoint($m) {
+		font-size: 1.4rem;
+	}
 
 	@include breakpoint($xxs) {
 		font-size: 1.3rem;

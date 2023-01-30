@@ -1,7 +1,19 @@
 .main {
+	padding-top: 22rem;
 	height: 100%;
 	width: 100%;
+
 	display: flex;
 	flex-direction: row;
-	align-items: flex-end;
+	align-items: center;
+
+	@include breakpoint($l) {
+		padding-top: 1rem;
+	}
+
+	@include breakpoint($xxxxs) {
+		flex-direction: column;
+	}
+
 }
+
