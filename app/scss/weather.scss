@@ -8,8 +8,6 @@
 	background-size: cover;
 	overflow-x:hidden;  /*для горизонтального*/
 
-
-
 	@include breakpoint($l) {
 		flex-direction: column;
 		flex-direction: column-reverse;
@@ -24,15 +22,16 @@
 	width: 100%;
 	height: 100%;
 	background: rgba(0, 0, 0, 0.3);
-	z-index: 0;
+	z-index: 100;
 }
 
 .weather__header {
-	text-align: right;
+	margin: 0 auto;
+	text-align: center;
 }
 
 .weather__name {
-	font-size: 1.4rem;
+	font-size: 1.6rem;
 
 	@include breakpoint($xxs) {
 		font-size: 1.3rem;
@@ -108,6 +107,7 @@
 	font-size: 1.5rem;
 	line-height: 1;
 	font-weight: 300;
+	text-align: center;
 
 	@include breakpoint($xxs) {
 		font-size: 1.3rem;
