@@ -7,8 +7,8 @@
 + JavaScript;
 + Node.js;
 + Gulp;
-+ Power Shell;
-+ Open Weather Map API;
++ Powershell;
++ API Яндекс.Погоды;
 + Locbd.ru.
 
 ## Запуск 
