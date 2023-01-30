@@ -22,8 +22,10 @@
 				}))
 			}
 		}
-		ws.onmessage = msg => {
-			const message = JSON.parse(msg)
+		ws.onmessage = event => {
+			console.log(event)
+			const message = event.data
+			console.log(`recieved ${message.action} message`)
 			if (message.action == 'response') {
 				const currentWeather = message.data.fact
 				// температура
@@ -32,6 +34,9 @@
 				let date = new Date(message.data.now_dt)
 				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > p > time').textContent = `${date.getHours()}:${date.getMinutes()} - ${date.toLocaleTimeString('ru-RU', { weekday: 'long' })}, ${date.toLocaleDateString('ru-RU', { day: 'numeric' })} ${date.toLocaleDateString('ru-RU', { month: 'short' })}`
 			}
+		}
+		function setSearchBarText(text) {
+			document.querySelector('body > div > aside > input').value = text
 		}
 	</script>
 </head>
@@ -47,22 +52,22 @@
 
 			<ul class="sidebar__list">
 				<li class="sidebar__item">
-					<p class="sidebar-text">
+					<p class="sidebar-text" onclick="setSearchBarText('Геленджик')">
 						Геленджик
 					</p>
 				</li>
 				<li class="sidebar__item">
-					<p class="sidebar-text">
+					<p class="sidebar-text" onclick="setSearchBarText('Краснодар')">
 						Краснодар
 					</p>
 				</li>
 				<li class="sidebar__item">
-					<p class="sidebar-text">
+					<p class="sidebar-text" onclick="setSearchBarText('Новороссийск')">
 						Новороссийск
 					</p>
 				</li>
 				<li class="sidebar__item">
-					<p class="sidebar-text">
+					<p class="sidebar-text" onclick="setSearchBarText('Сочи')">
 						Сочи
 					</p>
 				</li>
