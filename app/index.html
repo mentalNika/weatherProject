@@ -31,13 +31,21 @@
 				document.querySelector('body > div > div > main > h2').textContent = `${currentWeather.temp}°`
 				// город
 				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > h2').textContent = message.city
-				let date = new Date(message.data.now_dt)
 				// дата и время
+				let date = new Date(message.data.now_dt)
 				document.querySelector('body > div > div > main > div > div.weather__city-details-wrapper > p > time').textContent = `${date.getHours()}:${date.getMinutes()} - ${date.toLocaleTimeString('ru-RU', { weekday: 'long' })}, ${date.toLocaleDateString('ru-RU', { day: 'numeric' })} ${date.toLocaleDateString('ru-RU', { month: 'short' })}`
 				// условие погоды
 				document.querySelector('body > div > div > main > div > div.weather__icon > p').textContent = weatherConditionTranslations[currentWeather.condition]
 				// иконка
 				document.querySelector('body > div > div > main > div > div.weather__icon > img').setAttribute('src', `https://yastatic.net/weather/i/icons/funky/dark/${currentWeather.icon}.svg`)
+
+				// "подробнее"
+				// влажность
+				document.querySelector('body > div > aside > div > ul > li:nth-child(2) > p.sidebar__indicators').textContent = `${currentWeather.humidity}%`
+				// направление и скорость ветра
+				document.querySelector('body > div > aside > div > ul > li:nth-child(3) > p.sidebar__indicators').textContent = `${windDirectionTranslations[currentWeather.wind_dir]}, ${currentWeather.wind_speed} м/с`
+				// давление
+				document.querySelector('body > div > aside > div > ul > li:nth-child(4) > p.sidebar__indicators').textContent = `${currentWeather.pressure_mm} мм рт. ст.`
 			}
 		}
 		function setSearchBarText(text) {
@@ -63,6 +71,17 @@
 			thunderstorm: "Гроза",
 			"thunderstorm-with-rain": "Дождь с грозой",
 			"thunderstorm-with-hail": "Гроза с градом"
+		}
+		const windDirectionTranslations = {
+			nw: "Северо-западный",
+			n: "Северный",
+			ne: "Северо-восточный",
+			e: "Восточный",
+			se: "Юго-восточный",
+			s: "Южный",
+			sw: "Юго-западный",
+			w: "Западный",
+			c: "Штиль"
 		}
 	</script>
 </head>
