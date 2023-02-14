@@ -7,18 +7,18 @@ const server = new WebSocketServer({
 let sockets = []
 
 class YandexWeather {
-    base_url = 'https://api.weather.yandex.ru/v2/informers'
-    makeApiCallUrl({ lat, lon, lang }) {
-        return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
-    }
-    async fetchCurrent({ lat, lon }) {
-        return await fetch(this.makeApiCallUrl({ lat, lon }), {
+	base_url = 'https://api.weather.yandex.ru/v2/informers'
+	makeApiCallUrl({ lat, lon, lang }) {
+		return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
+	}
+	async fetchCurrent({ lat, lon }) {
+		return await fetch(this.makeApiCallUrl({ lat, lon }), {
 			method: 'GET',
 			headers: new Headers({
 				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
 			})
 		})
-    }
+	}
 }
 class WeatherApi {
 	baseUrl = 'https://api.weatherapi.com/v1/forecast.json'
@@ -55,16 +55,16 @@ server.on('connection', socket => {
 		console.log('[websocket] Получено сообщение, обработка')
 		if (message.action == 'currentWeather') {
 			console.log(`[websocket] Запрос на текущую погоду в "${message.data.city}"`)
-
+			
 			// Коэффициент Сёренсена-Дайса - бинарная мера сходства. Для пойска результата, который самый похожий к запросу
 			console.log('[index] Импорт "dice-coefficient"...')
 			const { diceCoefficient } = await import('dice-coefficient')
 			console.log(`[dice-coefficient] Поиск города "${message.data.city}" в locdb...`)
-
+			
 			// В этом списке будут храниться результаты
 			/** @type {{city: any, diceCoefficient: number}[]} */
 			const diceCoefficientResults = []
-
+			
 			locdb.cities.forEach(city => {
 				const res = diceCoefficient(city.attributes.name, message.data.city)
 				diceCoefficientResults.push(res)
@@ -111,18 +111,15 @@ server.on('connection', socket => {
 			const html = await res.text()
 			console.log('[jsdom] Обработка...')
 			const page = new JSDOM(html)
-			const swiperSlides = [...page.window.document.getElementsByClassName('swiper-slide')].slice(0, 5)
-			const hourlyForecast = [
-				...swiperSlides.map(slide => {
-					return {
-						time: slide.children[0].children[0].textContent,
-						icon: slide.children[0].children[1].attributes.src.textContent,
-						temp: slide.children[0].children[2].textContent
-					}
-				})
-			]
-			console.log(hourlyForecast)
-
+			
+			/** @type {import('./weatherapi').ForecastResponse} */
+			const fetchedForecast = await weatherApi.fetchForecast({ lat: resCity.attributes.point_lat, lon: resCity.attributes.point_lon, days: 7 })
+			const currentHour = new Date().getHours()
+			let forecast = fetchedForecast.forecast.forecastday[0].hour.slice(currentHour, currentHour + 5)
+			if (currentHour + 4 >= 24) {
+				forecast = forecast.concat(fetchedForecast.forecast.forecastday[1].hour.slice(0, 5 - (24 - currentHour)));
+			}
+			
 			const resCurrentWeather = await yandexweather.fetchCurrent({
 				lat: resCity.attributes.point_lat,
 				lon: resCity.attributes.point_lon,
@@ -132,19 +129,16 @@ server.on('connection', socket => {
 				console.error(err)
 			})
 			const currentWeather = await resCurrentWeather.json()
-
-			/** @type {import('./weatherapi').ForecastResponse} */
-			const fetchedForecast = await weatherApi.fetchForecast({ lat: resCity.attributes.point_lat, lon: resCity.attributes.point_lon, days: 7 })
-
+			
 			socket.send(JSON.stringify({
-                action: 'response',
-                data: {
-					hourly: hourlyForecast,
+				action: 'response',
+				data: {
+					hourly: forecast,
 					daily: fetchedForecast.forecast.forecastday,
 					current: currentWeather
 				},
-                city: resCity.attributes.name
-            }))
+				city: resCity.attributes.name
+			}))
 		}
 	})
 	socket.on('close', () => {
@@ -163,9 +157,9 @@ exec('gulp', {
 
 locdb.getAllCities()
 /**
- * Самое близкое число из списка
- * @param {number} x @param {any[]} arr
- * */
+* Самое близкое число из списка
+* @param {number} x @param {any[]} arr
+* */
 function findClosest(x, arr) {
 	const indexArr = arr.map(k => { return Math.abs(k - x) })
 	const min = Math.min.apply(Math, indexArr)

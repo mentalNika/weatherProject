@@ -58,16 +58,16 @@
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(3) > p').textContent = `${current.pressure_mm} мм рт. ст.`
 				
 				const hourlyItems = [...document.getElementsByClassName('temp-slider__item')]
-				const hourlyForecast = daily[0].hour.filter(hour => {
-					const hourValue = parseInt(hour.time.split(':')[0])
-					return (
-						(hourValue >= currentHour && hourValue < currentHour + 5) ||
-						(currentHour >= 20 && currentHour <= 23 && hourValue < currentHour - 19)
-					);
-				})
 				hourlyItems.forEach((item, index) => {
-					item.children[0].textContent = hourly[index].time
-					item.children[2].textContent = hourly[index].temp
+					const parts = hourly[index].time.split(' ')
+					const timeParts = parts[1].split(':')
+					item.children[0].textContent = `${timeParts[0]}: ${timeParts[1]}`
+
+					item.children[1].src = hourly[index].condition.icon
+
+					const roundedTemperature = Math.round(Number(hourly[index].temp_c))
+					const sign = roundedTemperature >= 0 ? '+' : '-'
+					item.children[2].textContent = `${sign}${roundedTemperature}°C`
 				})
 				
 				const sunrise = convertTo24Hour(daily[0].astro.sunrise)
