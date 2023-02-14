@@ -75,6 +75,25 @@ server.on('connection', socket => {
 				data: json,
 				city: resCity.attributes.name
 			}))
+		} else if (message.action == 'forecast') {
+			console.log(`[websocket] Запрос на прогноз погоды в "${message.data.city}"`)
+			console.log('[index] Импорт "dice-coefficient"...')
+			const { diceCoefficient } = await import('dice-coefficient')
+			console.log(`[dice-coefficient] Поиск города "${message.data.city}" в locdb...`)
+			/** @type {{city: any, diceCoefficient: number}[]} */
+			const diceCoefficientResults = []
+			locdb.cities.forEach(city => {
+				const res = diceCoefficient(city.attributes.name, message.data.city)
+				diceCoefficientResults.push(res)
+			})
+			const closest = findClosest(1, diceCoefficientResults)
+			const resCity = locdb.cities[diceCoefficientResults.indexOf(closest)]
+			console.log(`[locdb] Самый похожий город к запросу "${message.data.city}": ${resCity.attributes.name}`)
+			console.log('[index] Запрос прогноза из нескольких источников...')
+			console.log('[index] Импорт "jsdom"...')
+			const { JSDOM } = await import('jsdom')
+			console.log(`[jsdom] Загрузка...`)
+			const html = await fetch('')
 		}
 	})
 	socket.on('disconnect', () => {

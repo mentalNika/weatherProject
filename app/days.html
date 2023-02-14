@@ -9,6 +9,71 @@
 	<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<title>Погода</title>
 	<link rel="stylesheet" href="css/style.min.css">
+	<script>
+		window.ws = new WebSocket('ws://localhost:8080')
+		const reqCity = new URL(window.location.href).searchParams.get('city')
+		window.ws.onopen = () => {
+			console.log('sent')
+			window.ws.send(JSON.stringify({
+				action: 'currentWeather',
+				data: {
+					city: reqCity
+				}
+			}))
+		}
+		window.ws.onmessage = event => {
+			const message = JSON.parse(event.data)
+			console.log(`recieved ${message.action} message`)
+			if (message.action == 'response') {
+				const currentWeather = message.data.fact
+				const { forecast } = message.data
+
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > h2').textContent = reqCity
+				let date = new Date(message.data.now_dt)
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > p').textContent = `Сейчас ${date.getHours()}:${date.getMinutes()}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > li.actual-day__temp').textContent = currentWeather.temp > 0 ? `+${currentWeather.temp}` : `${currentWeather.temp}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > img').setAttribute('src', `https://yastatic.net/weather/i/icons/funky/dark/${currentWeather.icon}.svg`)
+				document.querySelector('body > div > aside > div > ul > li:nth-child(3) > p.sidebar__indicators').textContent = `${currentWeather.wind_speed} м/с, ${windDirectionTranslations[currentWeather.wind_dir]}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(2) > p').textContent = `${currentWeather.humidity}%`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(3) > p').textContent = `${currentWeather.pressure_mm} мм рт. ст.`
+			}
+		}
+		const weatherConditionTranslations = {
+			clear: "Ясно",
+			"partly-cloudy": "Малооблачно",
+			cloudy: "Облачно с прояснениями",
+			overcast: "Пасмурно",
+			drizzle: "Морось",
+			"light-rain": "Небольшой дождь",
+			rain: "Дождь",
+			"moderate-rain": "Умеренно сильный дождь",
+			"heavy-rain": "Сильный дождь",
+			"continuous-heavy-rain": "Длительный сильный дождь",
+			showers: "Ливень",
+			"wet-snow": "Дождь со снегом",
+			"light-snow": "Небольшой снег",
+			snow: "Снег",
+			"snow-showers": "Снегопад",
+			hail: "Град",
+			thunderstorm: "Гроза",
+			"thunderstorm-with-rain": "Дождь с грозой",
+			"thunderstorm-with-hail": "Гроза с градом"
+		}
+		const windDirectionTranslations = {
+			nw: "СЗ",
+			n: "С",
+			ne: "СВ",
+			e: "В",
+			se: "ЮВ",
+			s: "Ю",
+			sw: "ЮЗ",
+			w: "З",
+			c: "Ш"
+		}
+		window.onunload = () => {
+			window.ws.close()
+		}
+	</script>
 </head>
 
 <body>
