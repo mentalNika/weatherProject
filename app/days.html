@@ -10,32 +10,73 @@
 	<title>Погода</title>
 	<link rel="stylesheet" href="css/style.min.css">
 	<script>
+		function convertTo24Hour(time12h) {
+			const [time, modifier] = time12h.split(' ')
+			let [hours, minutes] = time.split(':')
+			if (hours === '12') hours = '00'
+			if (modifier === 'PM') hours = parseInt(hours, 10) + 12
+			return `${hours}:${minutes}`
+		}
+		function calculateTimeDifference(startTime, endTime) {
+			const [startHours, startMinutes] = startTime.split(':').map(Number)
+			const [endHours, endMinutes] = endTime.split(':').map(Number)
+			const startInMinutes = startHours * 60 + startMinutes
+			const endInMinutes = endHours * 60 + endMinutes
+			const differenceInMinutes = endInMinutes - startInMinutes
+			const differenceHours = Math.floor(differenceInMinutes / 60)
+			const differenceMinutes = differenceInMinutes % 60
+			return `${differenceHours.toString().padStart(2, '0')}:${differenceMinutes.toString().padStart(2, '0')}`
+		}
+		function formatTime(time) {
+			const [hours, minutes] = time.split(":")
+			return `${parseInt(hours)}h ${parseInt(minutes)}m`
+		}
 		window.ws = new WebSocket('ws://localhost:8080')
 		const reqCity = new URL(window.location.href).searchParams.get('city')
 		window.ws.onopen = () => {
 			console.log('sent')
 			window.ws.send(JSON.stringify({
-				action: 'currentWeather',
-				data: {
-					city: reqCity
-				}
+				action: 'forecast',
+				data: { city: reqCity }
 			}))
 		}
 		window.ws.onmessage = event => {
 			const message = JSON.parse(event.data)
 			console.log(`recieved ${message.action} message`)
 			if (message.action == 'response') {
-				const currentWeather = message.data.fact
-				const { forecast } = message.data
-
+				const { hourly, daily } = message.data
+				const current = message.data.current.fact
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > h2').textContent = reqCity
-				let date = new Date(message.data.now_dt)
-				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > p').textContent = `Сейчас ${date.getHours()}:${date.getMinutes()}`
-				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > li.actual-day__temp').textContent = currentWeather.temp > 0 ? `+${currentWeather.temp}` : `${currentWeather.temp}`
-				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > img').setAttribute('src', `https://yastatic.net/weather/i/icons/funky/dark/${currentWeather.icon}.svg`)
-				document.querySelector('body > div > aside > div > ul > li:nth-child(3) > p.sidebar__indicators').textContent = `${currentWeather.wind_speed} м/с, ${windDirectionTranslations[currentWeather.wind_dir]}`
-				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(2) > p').textContent = `${currentWeather.humidity}%`
-				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(3) > p').textContent = `${currentWeather.pressure_mm} мм рт. ст.`
+				const date = new Date(message.data.current.now_dt)
+				const currentHour = date.getHours();
+				const timeString = `${currentHour.toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > p').textContent = `Сейчас ${timeString}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > li.actual-day__temp').textContent = current.temp > 0 ? `+${current.temp}` : `${current.temp}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > img').setAttribute('src', `https://yastatic.net/weather/i/icons/funky/dark/${current.icon}.svg`)
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(1) > p').textContent = `${current.wind_speed} м/с, ${windDirectionTranslations[current.wind_dir]}`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(2) > p').textContent = `${current.humidity}%`
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__indicators-list > li:nth-child(3) > p').textContent = `${current.pressure_mm} мм рт. ст.`
+				
+				const hourlyItems = [...document.getElementsByClassName('temp-slider__item')]
+				const hourlyForecast = daily[0].hour.filter(hour => {
+					const hourValue = parseInt(hour.time.split(':')[0])
+					return (
+						(hourValue >= currentHour && hourValue < currentHour + 5) ||
+						(currentHour >= 20 && currentHour <= 23 && hourValue < currentHour - 19)
+					);
+				})
+				hourlyItems.forEach((item, index) => {
+					item.children[0].textContent = hourly[index].time
+					item.children[2].textContent = hourly[index].temp
+				})
+				
+				const sunrise = convertTo24Hour(daily[0].astro.sunrise)
+				const sunset = convertTo24Hour(daily[0].astro.sunset)
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.sun-card > div.sun-card__sunrise-sunset-icon > p.sun-card__sunrise-time').textContent = sunrise
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.sun-card > div.sun-card__sunrise-sunset-icon > p.sun-card__sunset-time').textContent = sunset
+				const timeDiff = calculateTimeDifference(sunrise, sunset)
+				const [hours, minutes] = timeDiff.split(':')
+				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.sun-card > ul > li:nth-child(2) > p').textContent = `${hours}ч ${minutes} мин`
 			}
 		}
 		const weatherConditionTranslations = {
@@ -80,34 +121,34 @@
 	<main class="weekend">
 		<div class="days-container"><!-- дейз контейнер -->
 			<div class="days-container__actual-day-sun-card-wrapper">
-
+				
 				<div class="actual-day"><!-- Обертка для блока 'актуальный день' -->
 					<h2 class="actual-day__header">Москва</h2>
 					<p class="actual-day__time">Сейчас 22:49</p>
-
+					
 					<ul class="actual-day__temp-list">
 						<li class="actual-day__temp">+6&#176;</li>
 						<img class="actual-day__img" src="images/weather-icons/day/cloud.png" alt="Иконка облака">
 						<li class="actual-day__feel">Облачно</li>
 					</ul>
-
+					
 					<ul class="actual-day__indicators-list">
 						<li class="actual-day__item">
 							<p class="actual-day__text actual-day__indicators--wind-i">2,9 м/с, СВ</p>
 						</li>
 						<li class="actual-day__item">
-							<p class="actual-day__text actual-day__indicators--humadity-i">70%</p>
+							<p class="actual-day__text actual-day__indicators--humidity-i">70%</p>
 						</li>
 						<li class="actual-day__item">
 							<p class="actual-day__text actual-day__indicators--preasure-i">772 мм рт.ст</p>
 						</li>
 					</ul>
-
+					
 					<!-- Свайпер для актуального дня -->
 					<div class="temp-slider swiper-container">
 						<div class="temp-slider__wrapper swiper-wrapper">
 							<div class="temp-slider__slide swiper-slide">
-
+								
 								<ul class="temp-slider__list">
 									<li class="temp-slider__item">
 										<p class="temp-slider__date">18:00</p>
@@ -138,9 +179,9 @@
 							</div>
 						</div>
 					</div><!-- /Свайпер для актуального дня -->
-
+					
 				</div><!-- /Обертка для блока 'актуальный день' -->
-
+				
 				<div class="sun-card">
 					<ul class="sun-card__list">
 						<li class="sun-card__header">
@@ -159,7 +200,7 @@
 					</div>
 				</div>
 			</div>
-
+			
 			<!-- Свайпер погоды на 7 дней -->
 			<div class="seven-days">
 				<h2 class="seven-days__header">Прогноз на 7 дней</h2>
@@ -167,13 +208,6 @@
 					<div class="seven-days__wrapper seven-days__swiper-wrapper">
 						<div class="seven-days__slide seven-days__swiper-slide">
 							<ul class="seven-days__list">
-								<Li class="seven-days__item">
-									<p class="seven-days__condition">Вчера</p>
-									<p class="seven-days__date-indecator">20 янв</p>
-									<img class="seven-days__icon" src="images/weather-icons/day/sun.png" alt="иконка солнца">
-									<p class="seven-days__condition">+11&#176;</p>
-									<p class="seven-days__date-indecator">Ясно</p>
-								</li>
 								<Li class="seven-days__item">
 									<p class="seven-days__condition">Сегодня</p>
 									<p class="seven-days__date-indecator">21 янв</p>
@@ -224,19 +258,19 @@
 									<p class="seven-days__date-indecator">Ясно</p>
 								</li>
 							</ul>
-
+							
 						</div>
 					</div>
 				</div>
 			</div><!-- /Свайпер погоды на 7 дней -->
-
+			
 			<div class="weekend__link-wrapper">
 				<a class="btn" href="index.html">На главную</a>
 			</div>
-
+			
 		</div> <!-- /дейз контейнер -->
 	</main>
-
+	
 	<script src="https://kit.fontawesome.com/def1ddea5c.js" crossorigin="anonymous"></script>
 	<script src="js/main.min.js"></script>
 </body>

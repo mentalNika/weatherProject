@@ -20,6 +20,15 @@ class YandexWeather {
 		})
     }
 }
+class WeatherApi {
+	baseUrl = 'https://api.weatherapi.com/v1/forecast.json'
+	apiKey = '9301acba9a4c4585885173753231402'
+	async fetchForecast({ lat, lon, days }) {
+		const res = await fetch(`${this.baseUrl}?key=${this.apiKey}&q=${lat},${lon}&days=${days}`)
+		const data = await res.json()
+		return data
+	}
+}
 class LocDB {
 	db = require('./db.json')
 	base_url = 'https://locdb.ru'
@@ -37,27 +46,34 @@ class LocDB {
 
 const locdb = new LocDB()
 const yandexweather = new YandexWeather()
+const weatherApi = new WeatherApi()
 server.on('connection', socket => {
 	sockets.push(socket)
 	console.log(`[websocket] Новое соединение (${sockets.length} всего)`)
 	socket.on('message', async msg => {
 		let message = JSON.parse(msg)
-		console.log(message)
+		console.log('[websocket] Получено сообщение, обработка')
 		if (message.action == 'currentWeather') {
 			console.log(`[websocket] Запрос на текущую погоду в "${message.data.city}"`)
+
+			// Коэффициент Сёренсена-Дайса - бинарная мера сходства. Для пойска результата, который самый похожий к запросу
 			console.log('[index] Импорт "dice-coefficient"...')
 			const { diceCoefficient } = await import('dice-coefficient')
 			console.log(`[dice-coefficient] Поиск города "${message.data.city}" в locdb...`)
+
+			// В этом списке будут храниться результаты
 			/** @type {{city: any, diceCoefficient: number}[]} */
 			const diceCoefficientResults = []
+
 			locdb.cities.forEach(city => {
 				const res = diceCoefficient(city.attributes.name, message.data.city)
 				diceCoefficientResults.push(res)
 			})
+			// Найти самый близкий результат к 1 (1 - полное сходство)
 			const closest = findClosest(1, diceCoefficientResults)
 			const resCity = locdb.cities[diceCoefficientResults.indexOf(closest)]
-			console.log(`[locdb] Самый похожий город к запросу "${message.data.city}": ${resCity.attributes.name}`)
-			console.log(`[yandexweather] Запрос погоды по координатам города ${resCity.attributes.name}`)
+			console.log(`[locdb] Самый похожий город к запросу: ${resCity.attributes.name}`)
+			console.log(`[yandexweather] Запрос погоды по координатам города...`)
 			const resWeather = await yandexweather.fetchCurrent({
 				lat: resCity.attributes.point_lat,
 				lon: resCity.attributes.point_lon,
@@ -67,9 +83,7 @@ server.on('connection', socket => {
 				console.error(err)
 			})
 			const json = await resWeather.json()
-			console.log(json)
 			console.log('[websocket] Отправка информации о погоде пользователю...')
-			console.log(resCity.attributes.name)
 			socket.send(JSON.stringify({
 				action: 'response',
 				data: json,
@@ -89,14 +103,52 @@ server.on('connection', socket => {
 			const closest = findClosest(1, diceCoefficientResults)
 			const resCity = locdb.cities[diceCoefficientResults.indexOf(closest)]
 			console.log(`[locdb] Самый похожий город к запросу "${message.data.city}": ${resCity.attributes.name}`)
-			console.log('[index] Запрос прогноза из нескольких источников...')
+			console.log('[index] Запрос прогноза погоды...')
 			console.log('[index] Импорт "jsdom"...')
 			const { JSDOM } = await import('jsdom')
-			console.log(`[jsdom] Загрузка...`)
-			const html = await fetch('')
+			console.log(`[index] Загрузка...`)
+			const res = await fetch(`https://yandex.ru/pogoda/?lat=${resCity.attributes.point_lat}&lon=${resCity.attributes.point_lon}`)
+			const html = await res.text()
+			console.log('[jsdom] Обработка...')
+			const page = new JSDOM(html)
+			const swiperSlides = [...page.window.document.getElementsByClassName('swiper-slide')].slice(0, 5)
+			const hourlyForecast = [
+				...swiperSlides.map(slide => {
+					return {
+						time: slide.children[0].children[0].textContent,
+						icon: slide.children[0].children[1].attributes.src.textContent,
+						temp: slide.children[0].children[2].textContent
+					}
+				})
+			]
+			console.log(hourlyForecast)
+
+			const resCurrentWeather = await yandexweather.fetchCurrent({
+				lat: resCity.attributes.point_lat,
+				lon: resCity.attributes.point_lon,
+				lang: 'ru-RU'
+			}).catch(err => {
+				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
+				console.error(err)
+			})
+			const currentWeather = await resCurrentWeather.json()
+
+			/** @type {import('./weatherapi').ForecastResponse} */
+			const fetchedForecast = await weatherApi.fetchForecast({ lat: resCity.attributes.point_lat, lon: resCity.attributes.point_lon, days: 7 })
+
+			socket.send(JSON.stringify({
+                action: 'response',
+                data: {
+					hourly: hourlyForecast,
+					daily: fetchedForecast.forecast.forecastday,
+					current: currentWeather
+				},
+                city: resCity.attributes.name
+            }))
 		}
 	})
-	socket.on('disconnect', () => {
+	socket.on('close', () => {
+		sockets.splice(sockets.indexOf(socket), 1)
 		console.log(`[websocket] Пользователь отключился (${sockets.length} всего)`)
 	})
 })
@@ -110,7 +162,10 @@ exec('gulp', {
 });
 
 locdb.getAllCities()
-/** @param {number} x @param {any[]} arr */
+/**
+ * Самое близкое число из списка
+ * @param {number} x @param {any[]} arr
+ * */
 function findClosest(x, arr) {
 	const indexArr = arr.map(k => { return Math.abs(k - x) })
 	const min = Math.min.apply(Math, indexArr)
