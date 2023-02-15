@@ -31,6 +31,11 @@
 			const [hours, minutes] = time.split(":")
 			return `${parseInt(hours)}h ${parseInt(minutes)}m`
 		}
+		function getDayOfWeek(date) {
+			const weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
+			const dayOfWeek = new Date(date).getDay();
+			return weekdays[dayOfWeek];
+		}
 		window.ws = new WebSocket('ws://localhost:8080')
 		const reqCity = new URL(window.location.href).searchParams.get('city')
 		window.ws.onopen = () => {
@@ -44,11 +49,11 @@
 			const message = JSON.parse(event.data)
 			console.log(`recieved ${message.action} message`)
 			if (message.action == 'response') {
-				const { hourly, daily } = message.data
-				const current = message.data.current.fact
+				const { hourly, daily, dailyConditions } = message.data
+				const current = message.data.current.current
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > h2').textContent = reqCity
-				const date = new Date(message.data.current.now_dt)
-				const currentHour = date.getHours();
+				const date = new Date(message.data.current.location.localtime_epoch)
+				const currentHour = date.getHours()
 				const timeString = `${currentHour.toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > p').textContent = `Сейчас ${timeString}`
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.actual-day > ul.actual-day__temp-list > li.actual-day__temp').textContent = current.temp > 0 ? `+${current.temp}` : `${current.temp}`
@@ -62,9 +67,9 @@
 					const parts = hourly[index].time.split(' ')
 					const timeParts = parts[1].split(':')
 					item.children[0].textContent = `${timeParts[0]}: ${timeParts[1]}`
-
+					
 					item.children[1].src = hourly[index].condition.icon
-
+					
 					const roundedTemperature = Math.round(Number(hourly[index].temp_c))
 					const sign = roundedTemperature >= 0 ? '+' : '-'
 					item.children[2].textContent = `${sign}${roundedTemperature}°C`
@@ -77,6 +82,19 @@
 				const timeDiff = calculateTimeDifference(sunrise, sunset)
 				const [hours, minutes] = timeDiff.split(':')
 				document.querySelector('body > main > div > div.days-container__actual-day-sun-card-wrapper > div.sun-card > ul > li:nth-child(2) > p').textContent = `${hours}ч ${minutes} мин`
+				
+				const dailyItems = [...document.querySelector('body > main > div > div.seven-days > div > div > div > ul').children]
+				dailyItems.forEach((item, index) => {
+					item.children[0].textContent = getDayOfWeek(new Date(daily[index].date))
+					item.children[1].textContent = new Date(daily[index].date).toLocaleString('ru-RU', { day: "numeric", month: 'short', monthDisplay: 'short' })
+					item.children[2].src = daily[index].day.condition.icon
+
+					const roundedTemperature = Math.round(Number(daily[index].day.avgtemp_c))
+					const sign = roundedTemperature >= 0 ? '+' : '-'
+					item.children[3].textContent = `${sign}${roundedTemperature}°C`
+
+					item.children[4].textContent = dailyConditions[index]
+				})
 			}
 		}
 		const weatherConditionTranslations = {

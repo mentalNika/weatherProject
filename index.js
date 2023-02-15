@@ -3,6 +3,7 @@ const { WebSocketServer } = require('ws')
 const server = new WebSocketServer({
 	port: 8080
 })
+const weatherConditions = require('./weatherapiConditions.json')
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 
@@ -12,12 +13,14 @@ class YandexWeather {
 		return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
 	}
 	async fetchCurrent({ lat, lon }) {
-		return await fetch(this.makeApiCallUrl({ lat, lon }), {
+		const res = await fetch(this.makeApiCallUrl({ lat, lon }), {
 			method: 'GET',
 			headers: new Headers({
 				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
 			})
 		})
+		const data = await res.json()
+		return data
 	}
 }
 class WeatherApi {
@@ -28,6 +31,18 @@ class WeatherApi {
 		const data = await res.json()
 		return data
 	}
+	async fetchCurrent({ lat, lon }) {
+		try {
+			const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${this.apiKey}&q=${lat},${lon}`)
+			const data = await res.json()
+			console.log(data)
+			return data
+		} catch (error) {
+			console.error(error)
+			return null
+		}
+	}
+	
 }
 class LocDB {
 	db = require('./db.json')
@@ -74,21 +89,37 @@ server.on('connection', socket => {
 			const resCity = locdb.cities[diceCoefficientResults.indexOf(closest)]
 			console.log(`[locdb] Самый похожий город к запросу: ${resCity.attributes.name}`)
 			console.log(`[yandexweather] Запрос погоды по координатам города...`)
-			const resWeather = await yandexweather.fetchCurrent({
+			// const resWeather = await yandexweather.fetchCurrent({
+			// 	lat: resCity.attributes.point_lat,
+			// 	lon: resCity.attributes.point_lon,
+			// 	lang: 'ru-RU'
+			// }).catch(err => {
+			// 	console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
+			// 	console.error(err)
+			// })
+			const resWeather = await weatherApi.fetchCurrent({
 				lat: resCity.attributes.point_lat,
-				lon: resCity.attributes.point_lon,
-				lang: 'ru-RU'
-			}).catch(err => {
-				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
-				console.error(err)
+				lon: resCity.attributes.point_lon
 			})
-			const json = await resWeather.json()
 			console.log('[websocket] Отправка информации о погоде пользователю...')
 			socket.send(JSON.stringify({
 				action: 'response',
-				data: json,
+				data: {
+					fact: {
+						temp: resWeather.current.temp_c,
+						condition: weatherConditions.filter(condition => condition.code == resWeather.current.condition.code)[0].languages.filter(lang => lang.lang_iso == 'ru')[0].night_text,
+						icon: `https:${resWeather.current.condition.icon}`,
+						feels_like: Math.round(resWeather.current.feelslike_c),
+						humidity: resWeather.current.humidity,
+						wind_dir: resWeather.current.wind_dir,
+						wind_speed: resWeather.current.wind_mph,
+						pressure_mm: resWeather.current.pressure_mb,
+
+					},
+					now_dt: resWeather.location.localtime_epoch
+				},
 				city: resCity.attributes.name
-			}))
+			})) // https://prod.liveshare.vsengsaas.visualstudio.com/join?480FB9E92070619196EA945BBEA3D5627946
 		} else if (message.action == 'forecast') {
 			console.log(`[websocket] Запрос на прогноз погоды в "${message.data.city}"`)
 			console.log('[index] Импорт "dice-coefficient"...')
@@ -120,22 +151,22 @@ server.on('connection', socket => {
 				forecast = forecast.concat(fetchedForecast.forecast.forecastday[1].hour.slice(0, 5 - (24 - currentHour)));
 			}
 			
-			const resCurrentWeather = await yandexweather.fetchCurrent({
+			const currentWeather = await weatherApi.fetchCurrent({
 				lat: resCity.attributes.point_lat,
-				lon: resCity.attributes.point_lon,
-				lang: 'ru-RU'
+				lon: resCity.attributes.point_lon
 			}).catch(err => {
 				console.error(`[yandexweather] Ошибка во время запроса текущей погоды в ${resCity.attributes.name}`)
 				console.error(err)
 			})
-			const currentWeather = await resCurrentWeather.json()
+			const dailyCodes = fetchedForecast.forecast.forecastday.map(day => day.code)
 			
 			socket.send(JSON.stringify({
 				action: 'response',
 				data: {
 					hourly: forecast,
 					daily: fetchedForecast.forecast.forecastday,
-					current: currentWeather
+					current: currentWeather,
+					dailyConditions: fetchedForecast.forecast.forecastday.map(day => weatherConditions[dailyCodes.indexOf(day.code)])
 				},
 				city: resCity.attributes.name
 			}))
