@@ -10,7 +10,13 @@
 	<title>Погода</title>
 	<link rel="stylesheet" href="css/style.min.css">
 	<script>
-		const ws = new WebSocket('ws://localhost:8080')
+		let link = '';
+		if (document.URL.endsWith('.app.github.dev/')) {
+			link = `${document.URL.slice(0, document.URL.length - 1)}`.replace('3000', '8080').replace('https', 'wss')
+		} else {
+			link = `${document.URL.replace('https', 'wss')}:8080`
+		}
+		const ws = new WebSocket(link)
 		ws.onopen = () => {
 			document.querySelector('body > div > aside > button > i').onclick = () => {
 				console.log('sent')

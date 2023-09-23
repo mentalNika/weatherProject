@@ -7,22 +7,22 @@ const weatherConditions = require('./weatherapiConditions.json')
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 
-class YandexWeather {
-	base_url = 'https://api.weather.yandex.ru/v2/informers'
-	makeApiCallUrl({ lat, lon, lang }) {
-		return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
-	}
-	async fetchCurrent({ lat, lon }) {
-		const res = await fetch(this.makeApiCallUrl({ lat, lon }), {
-			method: 'GET',
-			headers: new Headers({
-				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
-			})
-		})
-		const data = await res.json()
-		return data
-	}
-}
+// class YandexWeather {
+// 	base_url = 'https://api.weather.yandex.ru/v2/informers'
+// 	makeApiCallUrl({ lat, lon, lang }) {
+// 		return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
+// 	}
+// 	async fetchCurrent({ lat, lon }) {
+// 		const res = await fetch(this.makeApiCallUrl({ lat, lon }), {
+// 			method: 'GET',
+// 			headers: new Headers({
+// 				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
+// 			})
+// 		})
+// 		const data = await res.json()
+// 		return data
+// 	}
+// }
 class WeatherApi {
 	baseUrl = 'https://api.weatherapi.com/v1/forecast.json'
 	apiKey = '9301acba9a4c4585885173753231402'
@@ -45,22 +45,42 @@ class WeatherApi {
 	
 }
 class LocDB {
+	/** @type {{
+	 * 	elements: [{
+	 * 		type: 'element', name: 'country',
+	 * 		attributes: {
+	 * 			id: string,
+	 * 			erased: string,
+	 * 			public: string,
+	 * 			order: string,
+	 * 			name: 'Россия',
+	 * 			alpha2: 'RU'
+	 * 		}, elements: [{
+	 * 			type: 'element',
+	 * 			name: 'Region',
+	 * 			attributes: {},
+	 * 			elements: [{
+	 * 				type: 'element',
+	 * 				name: 'Locality',
+	 * 				attributes: {}
+	 * 			}]
+	 * 		}]
+	 * 	]}
+	 * }} */
 	db = require('./db.json')
 	base_url = 'https://locdb.ru'
-	regions = this.db.elements[0].elements[0].elements
-	cities = []
-	getAllCities() {
-		this.regions.forEach(region => {
-			region.elements.forEach(element => {
-				this.cities.push(element)
-			})
-		})
-		console.log(`[locdb] Всего ${this.cities.length} населённых пунктов`)
-	}
+	regions = this.db.elements[0].elements
+	/** @type {{elements: [{
+    type: 'element';
+    name: 'Locality';
+    attributes: {};
+}]}} */
+	cities = [].concat(...this.regions.map(region => region.elements))
 }
 
 const locdb = new LocDB()
-const yandexweather = new YandexWeather()
+console.log(`${locdb.regions.length} регионов, ${locdb.cities.length} городов`)
+// const yandexweather = new YandexWeather()
 const weatherApi = new WeatherApi()
 server.on('connection', socket => {
 	sockets.push(socket)
@@ -119,7 +139,7 @@ server.on('connection', socket => {
 					now_dt: resWeather.location.localtime_epoch
 				},
 				city: resCity.attributes.name
-			})) // https://prod.liveshare.vsengsaas.visualstudio.com/join?480FB9E92070619196EA945BBEA3D5627946
+			}))
 		} else if (message.action == 'forecast') {
 			console.log(`[websocket] Запрос на прогноз погоды в "${message.data.city}"`)
 			console.log('[index] Импорт "dice-coefficient"...')
@@ -178,7 +198,7 @@ server.on('connection', socket => {
 	})
 })
 console.log('[index] Запуск gulp...')
-exec('gulp', {
+exec('npx gulp', {
 	stdio: 'pipe'
 }).stdout.on('data', data => {
 	let output = String(data)
@@ -186,7 +206,6 @@ exec('gulp', {
 	process.stdout.write(output)
 });
 
-locdb.getAllCities()
 /**
 * Самое близкое число из списка
 * @param {number} x @param {any[]} arr
