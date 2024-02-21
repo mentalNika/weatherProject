@@ -1,9 +1,9 @@
-const { exec } = require('child_process')
-const { WebSocketServer } = require('ws')
+import { exec } from 'child_process'
+import { WebSocketServer } from 'ws';
 const server = new WebSocketServer({
 	port: 8080
 })
-const weatherConditions = require('./weatherapiConditions.json')
+import weatherConditions from './weatherapiConditions.json';
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 

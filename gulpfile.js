@@ -1,12 +1,13 @@
-const { src, dest, watch, parallel, series } = require('gulp')
+import gulp from 'gulp';
+const { src, dest, watch, parallel, series } = gulp;
 
-const scss = require('gulp-sass')(require('sass'))
-const concat = require('gulp-concat')
-const browserSync = require('browser-sync').create()
-const uglify = require('gulp-uglify-es').default
-const autoprefixer = require('gulp-autoprefixer')
-const imagemin = require('gulp-imagemin')
-const del = require('del')
+import scss from 'gulp-sass';
+import concat from 'gulp-concat';
+import browserSync from 'browser-sync';
+import uglify from 'gulp-uglify-es';
+import autoprefixer from 'gulp-autoprefixer';
+import imagemin from 'gulp-imagemin';
+import { deleteSync } from 'del';
 
 function browsersync() {
 	browserSync.init({
@@ -17,7 +18,7 @@ function browsersync() {
 }
 
 function cleanDist() {
-	return del('dist')
+	return deleteSync('dist')
 }
 
 function images() {
