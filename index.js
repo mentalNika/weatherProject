@@ -5,7 +5,7 @@ const http = require('http');
 const weatherConditions = require('./weatherapiConditions.json');
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'app')));
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
@@ -186,7 +186,9 @@ wss.on('connection', socket => {
 	})
 })
 
-
+server.listen(3000, () => {
+	console.log('Сервер запущен на порту 3000')
+})
 
 /**
 * Самое близкое число из списка
