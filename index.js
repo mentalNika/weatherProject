@@ -1,28 +1,16 @@
-import { exec } from 'child_process'
-import { WebSocketServer } from 'ws';
-const server = new WebSocketServer({
-	port: 8080
-})
-import weatherConditions from './weatherapiConditions.json';
+const { WebSocketServer } = require('ws');
+const express = require('express');
+const path = require('path');
+const http = require('http');
+const weatherConditions = require('./weatherapiConditions.json');
+
+const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
 /** @type {import('ws').WebSocket[]} Список подключённых пользователей */
 let sockets = []
 
-// class YandexWeather {
-// 	base_url = 'https://api.weather.yandex.ru/v2/informers'
-// 	makeApiCallUrl({ lat, lon, lang }) {
-// 		return `${this.base_url}?lat=${lat}&lon=${lon}&lang=${lang}`
-// 	}
-// 	async fetchCurrent({ lat, lon }) {
-// 		const res = await fetch(this.makeApiCallUrl({ lat, lon }), {
-// 			method: 'GET',
-// 			headers: new Headers({
-// 				'X-Yandex-API-Key': '09c8ffab-9f63-4d1d-96bb-b9d502b8ffa0'
-// 			})
-// 		})
-// 		const data = await res.json()
-// 		return data
-// 	}
-// }
 class WeatherApi {
 	baseUrl = 'https://api.weatherapi.com/v1/forecast.json'
 	apiKey = '9301acba9a4c4585885173753231402'
@@ -82,7 +70,7 @@ const locdb = new LocDB()
 console.log(`${locdb.regions.length} регионов, ${locdb.cities.length} городов`)
 // const yandexweather = new YandexWeather()
 const weatherApi = new WeatherApi()
-server.on('connection', socket => {
+wss.on('connection', socket => {
 	sockets.push(socket)
 	console.log(`[websocket] Новое соединение (${sockets.length} всего)`)
 	socket.on('message', async msg => {
@@ -197,14 +185,8 @@ server.on('connection', socket => {
 		console.log(`[websocket] Пользователь отключился (${sockets.length} всего)`)
 	})
 })
-console.log('[index] Запуск gulp...')
-exec('npx gulp', {
-	stdio: 'pipe'
-}).stdout.on('data', data => {
-	let output = String(data)
-	output = output.split('\n').map(line => line.trim()).join('\n')
-	process.stdout.write(output)
-});
+
+
 
 /**
 * Самое близкое число из списка
